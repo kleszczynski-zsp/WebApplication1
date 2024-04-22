@@ -9,85 +9,87 @@ using WebApplication1.Models.DB;
 
 namespace WebApplication1.Controllers
 {
-    public class MarkiController : Controller
+    public class ModelsController : Controller
     {
         private readonly DataContext _context;
 
-        public MarkiController(DataContext context)
+        public ModelsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Marki
+        // GET: Models
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Marki.Where(x=>!x.IsDisabled).ToListAsync());
+              return _context.Modele != null ? 
+                          View(await _context.Modele.ToListAsync()) :
+                          Problem("Entity set 'DataContext.Modele'  is null.");
         }
 
-        // GET: Marki/Details/5
+        // GET: Models/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Marki == null)
+            if (id == null || _context.Modele == null)
             {
                 return NotFound();
             }
 
-            var marka = await _context.Marki
-                .FirstOrDefaultAsync(m => m.MarkaId == id);
-            if (marka == null)
+            var model = await _context.Modele
+                .FirstOrDefaultAsync(m => m.ModelId == id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(marka);
+            return View(model);
         }
 
-        // GET: Marki/Create
+        // GET: Models/Create
         public IActionResult Create()
         {
-            return View(new Marka { IsDisabled = true, NazwaMarki=2137});
+            return View();
         }
 
-        // POST: Marki/Create
+        // POST: Models/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Marka marka)
+        public async Task<IActionResult> Create([Bind("ModelId,NazwaModelu")] Model model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(marka);
+                _context.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(marka);
+            return View(model);
         }
 
-        // GET: Marki/Edit/5
+        // GET: Models/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Marki == null)
+            if (id == null || _context.Modele == null)
             {
                 return NotFound();
             }
 
-            var marka = await _context.Marki.FindAsync(id);
-            if (marka == null)
+            var model = await _context.Modele.FindAsync(id);
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(marka);
+            return View(model);
         }
 
-        // POST: Marki/Edit/5
+        // POST: Models/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Marka marka)
+        public async Task<IActionResult> Edit(int id, [Bind("ModelId,NazwaModelu")] Model model)
         {
-            if (id != marka.MarkaId)
+            if (id != model.ModelId)
             {
                 return NotFound();
             }
@@ -96,12 +98,12 @@ namespace WebApplication1.Controllers
             {
                 try
                 {
-                    _context.Update(marka);
+                    _context.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MarkaExists(marka.MarkaId))
+                    if (!ModelExists(model.ModelId))
                     {
                         return NotFound();
                     }
@@ -112,49 +114,49 @@ namespace WebApplication1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(marka);
+            return View(model);
         }
 
-        // GET: Marki/Delete/5
+        // GET: Models/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Marki == null)
+            if (id == null || _context.Modele == null)
             {
                 return NotFound();
             }
 
-            var marka = await _context.Marki
-                .FirstOrDefaultAsync(m => m.MarkaId == id);
-            if (marka == null)
+            var model = await _context.Modele
+                .FirstOrDefaultAsync(m => m.ModelId == id);
+            if (model == null)
             {
                 return NotFound();
             }
 
-            return View(marka);
+            return View(model);
         }
 
-        // POST: Marki/Delete/5
+        // POST: Models/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Marki == null)
+            if (_context.Modele == null)
             {
-                return Problem("Entity set 'DataContext.Marki'  is null.");
+                return Problem("Entity set 'DataContext.Modele'  is null.");
             }
-            var marka = await _context.Marki.FindAsync(id);
-            if (marka != null)
+            var model = await _context.Modele.FindAsync(id);
+            if (model != null)
             {
-                _context.Marki.Remove(marka);
+                _context.Modele.Remove(model);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MarkaExists(int id)
+        private bool ModelExists(int id)
         {
-          return (_context.Marki?.Any(e => e.MarkaId == id)).GetValueOrDefault();
+          return (_context.Modele?.Any(e => e.ModelId == id)).GetValueOrDefault();
         }
     }
 }
